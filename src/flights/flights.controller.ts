@@ -1,16 +1,24 @@
+// src/flights/flights.controller.ts
 import { Controller, Get, Query } from '@nestjs/common';
-import { FlightsService, Flight } from './flights.service';
+import { FlightsService } from './flights.service';
+import { Flight } from './flight.entity';
 
 @Controller('flights')
 export class FlightsController {
   constructor(private readonly flightsService: FlightsService) {}
 
+  @Get('airports')
+  async getAirports() {
+    return this.flightsService.getAirports();
+  }
+
   @Get('search')
-  searchFlights(
+  async searchFlights(
     @Query('origin') origin: string,
     @Query('destination') destination: string,
-    @Query('date') date: string,
-  ): Flight[] {
-    return this.flightsService.searchFlights(origin, destination, date);
+    @Query('departureDate') departureDate: string,
+    @Query('returnDate') returnDate?: string,
+  ): Promise<Flight[]> {
+    return this.flightsService.searchFlights(origin, destination, departureDate, returnDate);
   }
 }

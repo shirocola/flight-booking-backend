@@ -1,27 +1,52 @@
-import { Injectable } from "@nestjs/common";
+// src/flights/flights.service.ts
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Flight } from './flight.entity';
+import { CreateFlightDto } from './dto/create-flight.dto';
 
-export interface Flight {
-    id: number;
-    origin: string;
-    destination: string;
-    date: string;
-    price: number;
+@Injectable()
+export class FlightsService {
+  constructor(
+    @InjectRepository(Flight)
+    private readonly flightRepository: Repository<Flight>,
+  ) {}
+
+  async getAirports() {
+    const flights = await this.flightRepository.find();
+
+    // Extract unique airport codes and related information
+    const airports = flights.map(flight => ({
+      code: flight.originCode,
+      city: flight.origin,
+      country: flight.originCountry,
+    }));
+
+    // Remove duplicates
+    const uniqueAirports = Array.from(new Set(airports.map(a => a.code)))
+      .map(code => airports.find(a => a.code === code));
+
+    return uniqueAirports;
   }
-  
-  @Injectable()
-  export class FlightsService {
-    private flights: Flight[] = [
-      { id: 1, origin: 'NYC', destination: 'LAX', date: '2024-08-20', price: 300 },
-      { id: 2, origin: 'LAX', destination: 'NYC', date: '2024-08-21', price: 320 },
-    ];
-  
-    searchFlights(origin: string, destination: string, date: string): Flight[] {
-      return this.flights.filter(
-        flight =>
-          flight.origin === origin &&
-          flight.destination === destination &&
-          flight.date === date,
-      );
+
+  async searchFlights(origin: string, destination: string, departureDate: string, returnDate?: string): Promise<Flight[]> {
+    const whereClause: any = {
+      origin,
+      destination,
+      departureDate,
+    };
+
+    if (returnDate) {
+      whereClause.returnDate = returnDate;
     }
+
+    return this.flightRepository.find({
+      where: whereClause,
+    });
   }
-  
+
+  async create(createFlightDto: CreateFlightDto): Promise<Flight> {
+    const flight = this.flightRepository.create(createFlightDto);
+    return this.flightRepository.save(flight);
+  }
+}
