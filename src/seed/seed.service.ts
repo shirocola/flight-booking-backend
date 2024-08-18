@@ -17,6 +17,7 @@ export class SeedService {
   async run() {
     await this.seedUsers();
     await this.seedFlights();
+    await this.seedBookings();
   }
 
   private async seedUsers() {
