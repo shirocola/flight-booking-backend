@@ -1,73 +1,161 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+# Secure Flight Search and Booking System - Backend
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+  
 
-## Description
+## Overview
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+  
 
-## Installation
+This repository contains the backend for a secure flight search and booking system. The backend is built with NestJS and TypeORM, and it provides RESTful APIs to handle flight search requests and bookings. It also includes user authentication and authorization using JWT, along with compliance features for GDPR/PDPA.
+
+  
+
+## Features
+
+  
+
+-  **Flight Search**: Search for flights based on origin, destination, and travel dates.
+
+-  **Booking System**: Capture passenger details and payment information to book flights.
+
+-  **User Authentication**: Secure login using JWT, with role-based access control.
+
+-  **Data Encryption**: HTTPS enforced for all communications.
+
+-  **GDPR/PDPA Compliance**: Users can request the deletion of their account and associated data.
+
+-  **Basic Logging**: Audit logging for user actions.
+
+-  **Input Validation**: Secure input handling to prevent SQL injection and XSS attacks.
+
+  
+
+## Technology Stack
+
+  
+
+-  **NestJS**: A progressive Node.js framework for building efficient, reliable, and scalable server-side applications.
+
+-  **TypeORM**: An ORM that can run in Node.js, providing a connection between the application and the PostgreSQL database.
+
+-  **JWT**: JSON Web Token is used for secure authentication.
+
+-  **PostgreSQL**: A powerful, open-source object-relational database system.
+
+  
+
+## Prerequisites
+
+  
+
+-  **Node.js**: Version 20 or higher
+
+-  **PostgreSQL**: Version 15 or higher
+
+-  **npm**: Version 6 or higher
+
+-  **OpenSSL**: For generating self-signed certificates
+
+  
+
+## Getting Started
+
+  
+
+### Clone the Repository
+
+  
 
 ```bash
-$ npm install
+
+git  clone  https://github.com/yourusername/flight-booking-backend.git
+
+cd  flight-booking-backend
+```
+  
+Install Dependencies
+```bash
+npm  install
 ```
 
-## Running the app
+  
+### Set Up Environment Variables
+
+Create a `.env` file in the root directory with the following content:
 
 ```bash
-# development
-$ npm run start
 
-# watch mode
-$ npm run start:dev
+DATABASE_HOST=localhost
 
-# production mode
-$ npm run start:prod
+DATABASE_PORT=5432
+
+DATABASE_USERNAME=myuser
+
+DATABASE_PASSWORD=mypassword
+
+DATABASE_NAME=mydatabase
+
+JWT_SECRET=your_jwt_secret
 ```
+  
+### Generate SSL Certificates
 
-## Test
+For development purposes, you can generate self-signed certificates:
+openssl  genrsa  -out  server.key  2048
 
 ```bash
-# unit tests
-$ npm run test
+openssl  req  -new  -key  server.key  -out  server.csr
 
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+openssl  x509  -req  -days  365  -in  server.csr  -signkey  server.key  -out  server.cert
 ```
 
-## Support
+### Run Migrations and Seed Data
+```bash
+npm  run  typeorm  migration:run
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+npm  run  seed
+```
+  
+### Start the Server
+```bash
+npm  run  start:dev
+```
 
-## Stay in touch
+  
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+The  server  will  run  on  https://localhost:3000.
 
-## License
+  
 
-Nest is [MIT licensed](LICENSE).
+Test  the  API
+
+You  can  use  tools  like  Postman  or  curl  to  interact  with  the  API.
+
+  
+
+API  Endpoints
+
+GET  /flights/search:  Search  for  flights.
+
+POST  /bookings:  Book  a  flight.
+
+POST  /auth/login:  Authenticate  a  user.
+
+DELETE  /users/
+
+:  Delete  a  user  and  associated  data (GDPR/PDPA compliance).
+
+Security  Considerations
+
+HTTPS:  All  traffic  is  encrypted  using  SSL.
+
+JWT  Authentication:  Secures  the  API  endpoints  with  token-based  authentication.
+
+Input  Validation:  Prevents  common  security  vulnerabilities  such  as  SQL  injection  and  XSS.
+
+Error  Handling:  Sensitive  information  is  not  exposed  in  error  messages.
+
+License
+
+This  project  is  licensed  under  the  MIT  License.
