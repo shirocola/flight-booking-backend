@@ -122,40 +122,29 @@ npm  run  seed
 npm  run  start:dev
 ```
 
-  
-
 The  server  will  run  on  https://localhost:3000.
 
-  
 
-Test  the  API
+### Test the API
 
-You  can  use  tools  like  Postman  or  curl  to  interact  with  the  API.
+You can use tools like Postman or `curl` to interact with the API.
 
-  
+### API Endpoints
 
-API  Endpoints
+-   **GET /flights/search**: Search for flights.
+-   **POST /bookings**: Book a flight.
+-   **POST /auth/login**: Authenticate a user.
+-   **DELETE /users/**
+    
+    : Delete a user and associated data (GDPR/PDPA compliance).
 
-GET  /flights/search:  Search  for  flights.
+### Security Considerations
 
-POST  /bookings:  Book  a  flight.
+-   **HTTPS**: All traffic is encrypted using SSL.
+-   **JWT Authentication**: Secures the API endpoints with token-based authentication.
+-   **Input Validation**: Prevents common security vulnerabilities such as SQL injection and XSS.
+-   **Error Handling**: Sensitive information is not exposed in error messages.
 
-POST  /auth/login:  Authenticate  a  user.
+### License
 
-DELETE  /users/
-
-:  Delete  a  user  and  associated  data (GDPR/PDPA compliance).
-
-Security  Considerations
-
-HTTPS:  All  traffic  is  encrypted  using  SSL.
-
-JWT  Authentication:  Secures  the  API  endpoints  with  token-based  authentication.
-
-Input  Validation:  Prevents  common  security  vulnerabilities  such  as  SQL  injection  and  XSS.
-
-Error  Handling:  Sensitive  information  is  not  exposed  in  error  messages.
-
-License
-
-This  project  is  licensed  under  the  MIT  License.
+This project is licensed under the MIT License.
