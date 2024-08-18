@@ -1,16 +1,21 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
+import { User } from './user.entity';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly jwtService: JwtService) {}
+  constructor(
+    private readonly jwtService: JwtService,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+  ) {}
 
   async validateUser(username: string, pass: string): Promise<any> {
-    // Replace with actual user lookup logic
-    const user = { username, password: 'hashedPasswordFromDB' };
-    const isPasswordValid = await bcrypt.compare(pass, user.password);
-    if (user && isPasswordValid) {
+    const user = await this.userRepository.findOne({ where: { username } });
+    if (user && await bcrypt.compare(pass, user.password)) {
       const { password, ...result } = user;
       return result;
     }
@@ -18,9 +23,15 @@ export class AuthService {
   }
 
   async login(user: any) {
-    const payload = { username: user.username, sub: user.userId };
+    const payload = { username: user.username, sub: user.id };
     return {
       access_token: this.jwtService.sign(payload),
     };
+  }
+
+  async register(username: string, password: string): Promise<User> {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = this.userRepository.create({ username, password: hashedPassword });
+    return this.userRepository.save(newUser);
   }
 }
