@@ -1,4 +1,3 @@
-// src/flights/flights.service.ts
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -10,7 +9,7 @@ export class FlightsService {
   constructor(
     @InjectRepository(Flight)
     private readonly flightRepository: Repository<Flight>,
-  ) {}
+  ) { }
 
   async getAirports() {
     const flights = await this.flightRepository.find();
@@ -29,20 +28,19 @@ export class FlightsService {
     return uniqueAirports;
   }
 
-  async searchFlights(origin: string, destination: string, departureDate: string, returnDate?: string): Promise<Flight[]> {
-    const whereClause: any = {
-      origin,
-      destination,
-      departureDate,
-    };
+  async searchFlights(originCode: string, destinationCode: string, departureDate: string, returnDate?: string): Promise<Flight[]> {
+    console.log('originCode', originCode, 'destinationCode', destinationCode, 'departureDate', departureDate, 'returnDate', returnDate);
+    const query = this.flightRepository.createQueryBuilder('flight')
+      .where('flight.originCode = :originCode', { originCode })
+      .andWhere('flight.destinationCode = :destinationCode', { destinationCode })
+      .andWhere('flight.departureDate = :departureDate', { departureDate });
 
     if (returnDate) {
-      whereClause.returnDate = returnDate;
+      query.andWhere('flight.returnDate = :returnDate', { returnDate });
     }
 
-    return this.flightRepository.find({
-      where: whereClause,
-    });
+    return query.getMany();
+
   }
 
   async create(createFlightDto: CreateFlightDto): Promise<Flight> {

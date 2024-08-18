@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/user.module';
 import { ProtectedController } from './protected/protected.controller';
 import { SeedModule } from './seed/seed.module';
+import { HttpsRedirectMiddleware } from './middleware/https-redirect.middleware';
 
 @Module({
   imports: [
@@ -30,4 +31,8 @@ import { SeedModule } from './seed/seed.module';
   controllers: [AppController, ProtectedController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(HttpsRedirectMiddleware).forRoutes('*');
+  }
+}

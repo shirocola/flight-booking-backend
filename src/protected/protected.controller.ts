@@ -1,11 +1,20 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard'; // Adjust the import path based on your project structure
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { RolesGuard } from '../auth/roles.guard';
+import { Roles } from '../auth/roles.decorator';
 
 @Controller('protected')
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class ProtectedController {
-  @UseGuards(JwtAuthGuard)
-  @Get()
-  getProtectedResource() {
-    return 'This is a protected route';
+  @Get('admin')
+  @Roles('admin')
+  getAdminResource() {
+    return 'This is an admin-only resource';
+  }
+
+  @Get('user')
+  @Roles('user', 'admin')
+  getUserResource() {
+    return 'This is a resource available to users and admins';
   }
 }

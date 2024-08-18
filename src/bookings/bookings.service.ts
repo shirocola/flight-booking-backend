@@ -1,26 +1,44 @@
-import { Injectable } from "@nestjs/common";
+// src/bookings/bookings.service.ts
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Booking } from './booking.entity';
+import { Flight } from '../flights/flight.entity';
+import { CreateBookingDto } from './dto/create-booking.dto';
+import * as crypto from 'crypto';
 
-export interface Booking {
-    id: number;
-    flightId: number;
-    passengerName: string;
-    email: string;
-    paymentDetails: string;
-  }
-  
-  @Injectable()
-  export class BookingsService {
-    private bookings: Booking[] = [];
-    private idCounter = 1;
-  
-    createBooking(booking: Omit<Booking, 'id'>): Booking {
-      const newBooking = { ...booking, id: this.idCounter++ };
-      this.bookings.push(newBooking);
-      return newBooking;
+@Injectable()
+export class BookingsService {
+  private readonly encryptionKey = 'your-encryption-key'; // Store securely in environment variables
+
+  constructor(
+    @InjectRepository(Booking)
+    private readonly bookingRepository: Repository<Booking>,
+    @InjectRepository(Flight)
+    private readonly flightRepository: Repository<Flight>,
+  ) {}
+
+  async createBooking(createBookingDto: CreateBookingDto): Promise<Booking> {
+    const flight = await this.flightRepository.findOneBy({ id: createBookingDto.flightId });
+    if (!flight) {
+      throw new Error('Flight not found');
     }
-  
-    getBookings(): Booking[] {
-      return this.bookings;
-    }
+
+    const encryptedPaymentDetails = this.encrypt(createBookingDto.paymentDetails);
+
+    const booking = this.bookingRepository.create({
+      flight,
+      passengerName: createBookingDto.passengerName,
+      email: createBookingDto.email,
+      paymentDetails: encryptedPaymentDetails,
+    });
+
+    return this.bookingRepository.save(booking);
   }
-  
+
+  private encrypt(text: string): string {
+    const cipher = crypto.createCipheriv('aes-256-ctr', this.encryptionKey, Buffer.alloc(16, 0));
+    const encrypted = Buffer.concat([cipher.update(text), cipher.final()]);
+    return encrypted.toString('hex');
+  }
+}

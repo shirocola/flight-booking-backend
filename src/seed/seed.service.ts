@@ -21,10 +21,12 @@ export class SeedService {
       {
         username: 'admin',
         password: 'adminpassword',
+        roles: ['admin'],
       },
       {
         username: 'user',
         password: 'userpassword',
+        roles: ['user'],
       },
     ];
 
