@@ -9,19 +9,11 @@ import { UsersModule } from './users/user.module';
 import { ProtectedController } from './protected/protected.controller';
 import { SeedModule } from './seed/seed.module';
 import { HttpsRedirectMiddleware } from './middleware/https-redirect.middleware';
+import { AppDataSource } from './data-source'; // Import the data source
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'myuser',
-      password: 'mypassword',
-      database: 'mydatabase',
-      entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      synchronize: true,
-    }),
+    TypeOrmModule.forRoot(AppDataSource.options), // Use the data source options
     FlightsModule,
     BookingsModule,
     AuthModule,
