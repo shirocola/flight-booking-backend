@@ -10,5 +10,6 @@ import { Flight } from '../flights/flight.entity';
   imports: [TypeOrmModule.forFeature([Booking, Flight])],
   controllers: [BookingsController],
   providers: [BookingsService],
+  exports: [BookingsService],
 })
 export class BookingsModule {}

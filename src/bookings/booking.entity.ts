@@ -14,7 +14,13 @@ export class Booking {
   email: string;
 
   @Column({ nullable: false })
-  paymentDetails: string;
+  encryptedCardNumber: string;
+
+  @Column({ nullable: false })
+  encryptedCardCVV: string;
+
+  @Column({ nullable: false })
+  encryptedCardExpiry: string;
 
   @ManyToOne(() => Flight, (flight) => flight.id)
   flight: Flight;
