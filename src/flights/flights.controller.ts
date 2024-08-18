@@ -1,7 +1,8 @@
 // src/flights/flights.controller.ts
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Query, Post, Body } from '@nestjs/common';
 import { FlightsService } from './flights.service';
 import { Flight } from './flight.entity';
+import { CreateFlightDto } from './dto/create-flight.dto';
 
 @Controller('flights')
 export class FlightsController {
@@ -20,5 +21,10 @@ export class FlightsController {
     @Query('returnDate') returnDate?: string,
   ): Promise<Flight[]> {
     return this.flightsService.searchFlights(origin, destination, departureDate, returnDate);
+  }
+
+  @Post()
+  async createFlight(@Body() createFlightDto: CreateFlightDto): Promise<Flight> {
+    return this.flightsService.create(createFlightDto);
   }
 }
