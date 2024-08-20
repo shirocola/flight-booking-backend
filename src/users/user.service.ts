@@ -27,15 +27,16 @@ export class UsersService {
 
   async deleteUser(userId: number): Promise<void> {
     const user = await this.userRepository.findOneBy({ id: userId });
-
+  
     if (!user) {
       throw new NotFoundException('User not found');
     }
-
+  
     // Delete associated bookings
-    await this.bookingRepository.delete({ flight: { id: userId } });
-
+    await this.bookingRepository.delete({ user: { id: userId } });
+  
     // Delete the user
     await this.userRepository.delete(userId);
   }
+  
 }

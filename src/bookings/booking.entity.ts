@@ -1,5 +1,5 @@
-// src/bookings/booking.entity.ts
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { User } from '../users/user.entity';
 import { Flight } from '../flights/flight.entity';
 
 @Entity()
@@ -24,4 +24,7 @@ export class Booking {
 
   @ManyToOne(() => Flight, (flight) => flight.id)
   flight: Flight;
+
+  @ManyToOne(() => User, (user) => user.bookings, { onDelete: 'CASCADE' })
+  user: User;
 }
