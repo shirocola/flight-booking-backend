@@ -5,6 +5,7 @@ import { User } from './user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { Booking } from 'src/bookings/booking.entity';
 import * as bcrypt from 'bcryptjs';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -25,18 +26,36 @@ export class UsersService {
     return this.userRepository.findOne({ where: { username } });
   }
 
-  async deleteUser(userId: number): Promise<void> {
+  async findOneById(id: number): Promise<User | undefined> {
+    return this.userRepository.findOneBy({ id });
+  }
+
+  async updateUser(userId: number, updateUserDto: UpdateUserDto): Promise<User> {
     const user = await this.userRepository.findOneBy({ id: userId });
-  
+
     if (!user) {
       throw new NotFoundException('User not found');
     }
-  
+
+    if (updateUserDto.password) {
+      updateUserDto.password = await bcrypt.hash(updateUserDto.password, 10);
+    }
+
+    Object.assign(user, updateUserDto);
+    return this.userRepository.save(user);
+  }
+
+  async deleteUser(userId: number): Promise<void> {
+    const user = await this.userRepository.findOneBy({ id: userId });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
     // Delete associated bookings
     await this.bookingRepository.delete({ user: { id: userId } });
-  
+
     // Delete the user
     await this.userRepository.delete(userId);
   }
-  
 }
