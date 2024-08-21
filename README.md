@@ -121,7 +121,7 @@ openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.cert
 ### Run the PostgreSQL Database Using Docker
 Start the PostgreSQL database using Docker:
 ```bash
-docker-compose up postgres
+docker-compose up postgres -d
 ```
 
 ### Run Migrations and Seed Data
