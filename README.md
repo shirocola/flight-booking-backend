@@ -126,7 +126,7 @@ docker-compose up postgres
 
 ### Run Migrations and Seed Data
 ```bash
-npm  run  typeorm  migration:run
+npm  run  typeorm
 npm  run  seed
 ```
   
