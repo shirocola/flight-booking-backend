@@ -23,6 +23,11 @@ export class AuthService {
     return null;
   }
 
+  async doesUserExist(username: string): Promise<boolean> {
+    const user = await this.usersService.findOne(username);
+    return !!user;
+  }
+
   async login(user: any) {
     const payload = { username: user.username, sub: user.id, roles: user.roles };
     this.logger.log(`User ${user.username} logged in`);

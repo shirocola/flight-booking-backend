@@ -11,10 +11,20 @@ export class AuthController {
   @Post('login')
   async login(@Body() loginDto: LoginDto) {
     const user = await this.authService.validateUser(loginDto.username, loginDto.password);
+
     if (!user) {
-      this.logger.warn(`Failed login attempt for username: ${loginDto.username}`);
+      // Log detailed error internally for auditing
+      const userExists = await this.authService.doesUserExist(loginDto.username);
+      if (!userExists) {
+        this.logger.warn(`Login attempt failed: User ${loginDto.username} not found`);
+      } else {
+        this.logger.warn(`Login attempt failed: Invalid credentials for user ${loginDto.username}`);
+      }
+
+      // Return a generic 401 Unauthorized error to the client
       throw new UnauthorizedException('Invalid credentials');
     }
+
     this.logger.log(`User ${loginDto.username} logged in successfully`);
     return this.authService.login(user);
   }
