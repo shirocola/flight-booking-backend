@@ -1,14 +1,21 @@
 
 # Secure Flight Search and Booking System - Backend
+ 
 
-  
-
-## Overview
-
-  
+## Overview  
 
 This repository contains the backend for a secure flight search and booking system. The backend is built with NestJS and TypeORM, and it provides RESTful APIs to handle flight search requests and bookings. It also includes user authentication and authorization using JWT, along with compliance features for GDPR/PDPA.
 
+## Technical Stack
+
+### Backend: NestJS (TypeScript)
+- **Reason:** NestJS is a Node.js framework that works well with TypeScript. It helps organize code in a clear, modular way, which is important for building reliable applications. I chose it because it’s the framework I use at work, so I’m very comfortable with it. This means I can work faster and more effectively, which is important for completing the project on time. Additionally, NestJS aligns with the tools and technologies mentioned in the job description, demonstrating my readiness to work with the company’s preferred stack.
+
+### Database: PostgreSQL
+- **Reason:** PostgreSQL is a reliable, open-source database. It handles complex queries and ensures that data is stored correctly, which is essential for a flight booking system. I’m familiar with PostgreSQL, so I can work with it efficiently without needing to learn a new database system. PostgreSQL is also listed in the job description, making it a relevant choice for this project.
+
+### ORM: TypeORM
+- **Reason:** TypeORM is a tool that helps manage the database in a TypeScript environment, making it a good match for NestJS. It supports PostgreSQL and makes it easy to handle database migrations and data management. Since I already use TypeORM at work, I can use it effectively and maintain high-quality code. TypeORM’s compatibility with the tools mentioned in the job description ensures that my skills are aligned with the company’s needs.
   
 
 ## Features
