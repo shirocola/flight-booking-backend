@@ -3,21 +3,17 @@ import { UsersService } from '../users/user.service';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { FlightsService } from '../flights/flights.service';
 import { CreateFlightDto } from '../flights/dto/create-flight.dto';
-import { BookingsService } from '../bookings/bookings.service';
-import { CreateBookingDto } from '../bookings/dto/create-booking.dto';
 
 @Injectable()
 export class SeedService {
   constructor(
     private readonly usersService: UsersService,
     private readonly flightsService: FlightsService,
-    private readonly bookingsService: BookingsService,
   ) {}
 
   async run() {
-    const adminUserId = await this.seedUsers();
+    await this.seedUsers();
     await this.seedFlights();
-    await this.seedBookings(adminUserId);
   }
 
   private async seedUsers() {
@@ -269,35 +265,8 @@ export class SeedService {
     ];
 
     for (const flight of flights) {
-      await this.flightsService.create(flight);
-      console.log('Flight created');
-    }
-  }
-
-  private async seedBookings(adminUserId: number) {
-    const bookings: CreateBookingDto[] = [
-      {
-        flightId: 1, // Assuming this flight ID exists in the database
-        passengerName: 'John Doe',
-        email: 'john.doe@example.com',
-        cardNumber: '4111111111111111', // Mock Visa card number
-        cardCVV: '123',
-        cardExpiry: '12/24',
-      },
-      {
-        flightId: 2, // Assuming this flight ID exists in the database
-        passengerName: 'Jane Smith',
-        email: 'jane.smith@example.com',
-        cardNumber: '5500000000000004', // Mock MasterCard number
-        cardCVV: '456',
-        cardExpiry: '11/25',
-      },
-      // More bookings...
-    ];
-
-    for (const booking of bookings) {
-      await this.bookingsService.createBooking(booking, adminUserId);
-      console.log('Booking created');
+      const createdFlight = await this.flightsService.create(flight);
+      console.log('Flight created', createdFlight);
     }
   }
 }

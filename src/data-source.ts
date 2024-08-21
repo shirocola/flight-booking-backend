@@ -12,6 +12,14 @@ export const AppDataSource = new DataSource({
   database: process.env.DATABASE_NAME || 'mydatabase',
   entities: [Flight, Booking, User],
   migrations: ['dist/migrations/*.js'], // Use JavaScript files for migrations
-  synchronize: true,
+  synchronize: false,
   logging: true,
 });
+
+AppDataSource.initialize()
+  .then(() => {
+    console.log('Data Source has been initialized!');
+  })
+  .catch((err) => {
+    console.error('Error during Data Source initialization', err);
+  });
