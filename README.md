@@ -69,7 +69,7 @@ This repository contains the backend for a secure flight search and booking syst
 
 ```bash
 
-git  clone  https://github.com/yourusername/flight-booking-backend.git
+git  clone  https://github.com/shirocola/flight-booking-backend.git
 
 cd  flight-booking-backend
 ```
