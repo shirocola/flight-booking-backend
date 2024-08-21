@@ -100,14 +100,23 @@ JWT_SECRET=your_jwt_secret
 ```
   
 ### Generate SSL Certificates
+For development purposes, you can generate self-signed certificates using the following commands:
 
-For development purposes, you can generate self-signed certificates:
-openssl  genrsa  -out  server.key  2048
-
+#### Generate a Private Key:
+Generate a 2048-bit RSA private key.
 ```bash
-openssl  req  -new  -key  server.key  -out  server.csr
+openssl genpkey -algorithm RSA -out server.key -pkeyopt rsa_keygen_bits:2048
+```
+#### Create a Certificate Signing Request (CSR):
+Use the private key to create a CSR.
+```bash
+openssl req -new -key server.key -out server.csr
+```
+#### Generate a Self-Signed Certificate:
 
-openssl  x509  -req  -days  365  -in  server.csr  -signkey  server.key  -out  server.cert
+Create a self-signed certificate using the CSR and the private key. This certificate will be valid for 365 days.
+```bash
+openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.cert
 ```
 
 ### Run Migrations and Seed Data
