@@ -1,5 +1,4 @@
-// src/bookings/dto/create-booking.dto.ts
-import { IsString, IsEmail, IsNotEmpty, Length, IsCreditCard } from 'class-validator';
+import { IsString, IsEmail, IsNotEmpty, Length, IsCreditCard, IsNumber } from 'class-validator';
 
 export class CreateBookingDto {
   @IsString()
@@ -22,7 +21,7 @@ export class CreateBookingDto {
   @Length(5, 5)
   cardExpiry: string; // Format: MM/YY
 
-  @IsString()
+  @IsNumber()
   @IsNotEmpty()
   flightId: number;
 }

@@ -1,24 +1,16 @@
-import {
-  Controller,
-  Get,
-  Put,
-  Delete,
-  Param,
-  Body,
-  UseGuards,
-  NotFoundException,
-  Req,
-} from '@nestjs/common';
+import { Controller, Get, Put, Delete, Param, Body, UseGuards, NotFoundException, Req, Logger, ForbiddenException } from '@nestjs/common';
 import { UsersService } from './user.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { Roles } from '../auth/roles.decorator';
 import { RolesGuard } from '../auth/roles.guard';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './user.entity';
+import { Booking } from '../bookings/booking.entity';
 
 @Controller('users')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class UsersController {
+  private readonly logger = new Logger(UsersController.name);
+
   constructor(private readonly usersService: UsersService) {}
 
   @Get('me')
@@ -26,9 +18,20 @@ export class UsersController {
     const userId = req.user.userId;
     const user = await this.usersService.findOneById(userId);
     if (!user) {
+      this.logger.warn(`User with ID ${userId} not found`);
       throw new NotFoundException('User not found');
     }
     return user;
+  }
+
+  @Get('me/bookings')
+  async getUserBookings(@Req() req): Promise<Booking[]> {
+    const userId = req.user.userId;
+    const bookings = await this.usersService.findUserBookings(userId);
+    if (!bookings || bookings.length === 0) {
+      throw new NotFoundException('No bookings found for this user');
+    }
+    return bookings;
   }
 
   @Put('me')
@@ -39,8 +42,14 @@ export class UsersController {
   }
 
   @Delete(':id')
-  @Roles('admin', 'user')
-  async deleteUser(@Param('id') id: number): Promise<void> {
+  async deleteUser(@Param('id') id: number, @Req() req): Promise<void> {
+    const user = await this.usersService.findOneById(id);
+
+    // Check if the user is deleting their own account
+    if (user.id !== req.user.userId && !req.user.roles?.includes('admin')) {
+      throw new ForbiddenException('You do not have permission to perform this action.');
+    }
+
     await this.usersService.deleteUser(id);
   }
 }

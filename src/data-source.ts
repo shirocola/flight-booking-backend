@@ -12,6 +12,6 @@ export const AppDataSource = new DataSource({
   database: process.env.DATABASE_NAME || 'mydatabase',
   entities: [Flight, Booking, User],
   migrations: ['dist/migrations/*.js'], // Use JavaScript files for migrations
-  synchronize: false,
+  synchronize: true,
   logging: true,
 });

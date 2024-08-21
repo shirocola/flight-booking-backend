@@ -3,8 +3,8 @@ import { UsersService } from '../users/user.service';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { FlightsService } from '../flights/flights.service';
 import { CreateFlightDto } from '../flights/dto/create-flight.dto';
-import { BookingsService } from 'src/bookings/bookings.service';
-import { CreateBookingDto } from 'src/bookings/dto/create-booking.dto';
+import { BookingsService } from '../bookings/bookings.service';
+import { CreateBookingDto } from '../bookings/dto/create-booking.dto';
 
 @Injectable()
 export class SeedService {
@@ -15,12 +15,14 @@ export class SeedService {
   ) {}
 
   async run() {
-    await this.seedUsers();
+    const adminUserId = await this.seedUsers();
     await this.seedFlights();
-    await this.seedBookings();
+    await this.seedBookings(adminUserId);
   }
 
   private async seedUsers() {
+    let adminUserId: number;
+
     const users: CreateUserDto[] = [
       {
         username: 'admin',
@@ -32,14 +34,25 @@ export class SeedService {
         password: 'userpassword',
         roles: ['user'],
       },
+      {
+        username: 'testuser',
+        password: 'testpassword',
+        roles: ['user'],
+      },
     ];
 
     for (const user of users) {
       const existingUser = await this.usersService.findOne(user.username);
       if (!existingUser) {
-        await this.usersService.create(user);
+        const createdUser =  await this.usersService.create(user);
+        console.log(`User ${user.username} created`);
+
+        if (user.username === 'admin') {
+          adminUserId = createdUser.id;;
+        }
       }
     }
+    return adminUserId;
   }
 
   private async seedFlights() {
@@ -261,7 +274,7 @@ export class SeedService {
     }
   }
 
-  private async seedBookings() {
+  private async seedBookings(adminUserId: number) {
     const bookings: CreateBookingDto[] = [
       {
         flightId: 1, // Assuming this flight ID exists in the database
@@ -283,7 +296,7 @@ export class SeedService {
     ];
 
     for (const booking of bookings) {
-      await this.bookingsService.createBooking(booking);
+      await this.bookingsService.createBooking(booking, adminUserId);
       console.log('Booking created');
     }
   }

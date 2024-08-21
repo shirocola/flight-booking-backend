@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
-import { Booking } from 'src/bookings/booking.entity';
+import { Booking } from '../bookings/booking.entity';
 import * as bcrypt from 'bcryptjs';
 import { UpdateUserDto } from './dto/update-user.dto';
 
@@ -27,7 +27,14 @@ export class UsersService {
   }
 
   async findOneById(id: number): Promise<User | undefined> {
-    return this.userRepository.findOneBy({ id });
+    return this.userRepository.findOne({ where: { id }, relations: ['bookings', 'bookings.flight'] });
+  }
+
+  async findUserBookings(userId: number): Promise<Booking[]> {
+    return this.bookingRepository.find({
+      where: { user: { id: userId } },
+      relations: ['flight'], // Include flight information
+    });
   }
 
   async updateUser(userId: number, updateUserDto: UpdateUserDto): Promise<User> {

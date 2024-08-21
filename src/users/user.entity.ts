@@ -1,5 +1,5 @@
-import { Booking } from 'src/bookings/booking.entity';
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Booking } from '../bookings/booking.entity';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, Index } from 'typeorm';
 
 @Entity()
 export class User {
@@ -7,15 +7,15 @@ export class User {
   id: number;
 
   @Column({ unique: true })
+  @Index()
   username: string;
 
   @Column()
   password: string;
 
-  @Column('simple-array', { default: '', nullable: false })
-  roles?: string[];
+  @Column('simple-array', { default: 'user' }) // Default role set to 'user'
+  roles: string[];
 
   @OneToMany(() => Booking, (booking) => booking.user)
   bookings: Booking[];
-
 }

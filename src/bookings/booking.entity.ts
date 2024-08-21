@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, Index } from 'typeorm';
 import { User } from '../users/user.entity';
 import { Flight } from '../flights/flight.entity';
 
@@ -22,9 +22,13 @@ export class Booking {
   @Column({ nullable: false })
   encryptedCardExpiry: string;
 
-  @ManyToOne(() => Flight, (flight) => flight.id)
+  @Column({ default: true })
+  active: boolean;
+
+  @ManyToOne(() => Flight, (flight) => flight.bookings)
   flight: Flight;
 
   @ManyToOne(() => User, (user) => user.bookings, { onDelete: 'CASCADE' })
   user: User;
 }
+

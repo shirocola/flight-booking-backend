@@ -31,4 +31,5 @@ export class Flight {
 
   @Column('decimal', { nullable: false })
   price: number;
+  bookings: any;
 }
