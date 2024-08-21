@@ -118,11 +118,15 @@ Create a self-signed certificate using the CSR and the private key. This certifi
 ```bash
 openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.cert
 ```
+### Run the PostgreSQL Database Using Docker
+Start the PostgreSQL database using Docker:
+```bash
+docker-compose up postgres
+```
 
 ### Run Migrations and Seed Data
 ```bash
 npm  run  typeorm  migration:run
-
 npm  run  seed
 ```
   
